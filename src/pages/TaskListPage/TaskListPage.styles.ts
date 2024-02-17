@@ -80,3 +80,25 @@ export const LogoutButton = styled.button`
     color: darken(${softRed}, 10%);
   }
 `;
+
+export const FilterSortContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+`;
+
+export const FilterLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 10px;
+  font-size: 16px;
+`;
+
+export const SortLabel = styled(FilterLabel)``;
+
+export const FilterSelect = styled.select`
+  margin-left: 5px;
+`;
+
+export const SortSelect = styled(FilterSelect)``;
