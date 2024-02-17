@@ -24,7 +24,7 @@ import { FILTER_OPTIONS, SORT_OPTION } from "./TaskList.config";
 import useTaskApi from "../../hooks/useTaskApi";
 import { TaskI } from "../../interface/Task.interface";
 import EditTaskModal from "../../components/EditTaskModal";
-import { parseSortOption } from "../../utils/taskSorting";
+import { parseSortOption } from "../../utils/taskSorting.utils";
 import { TASK_STATUS } from "../../interface/Tasks.type";
 
 const TaskListPage: React.FC = () => {

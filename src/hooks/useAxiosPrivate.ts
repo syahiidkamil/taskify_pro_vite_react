@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 import useRefreshToken from "./useRefreshToken";
 import useAuth from "./useAuth";
 import { axiosPrivateInstance } from "../api/axiosInstance";
+import { deleteTokensCookies } from "../utils/auth.utils";
 
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken();
   const { auth } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const requestIntercept = axiosPrivateInstance.interceptors.request.use(
@@ -28,10 +31,16 @@ const useAxiosPrivate = () => {
         const prevRequest = error?.config;
         if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
-          const new_access_token = await refresh();
-          prevRequest.headers["Authorization"] = `Bearer ${new_access_token}`;
-          return axiosPrivateInstance(prevRequest);
+          try {
+            const new_access_token = await refresh();
+            prevRequest.headers["Authorization"] = `Bearer ${new_access_token}`;
+            return axiosPrivateInstance(prevRequest);
+          } catch (error) {
+            deleteTokensCookies();
+            navigate("/login");
+          }
         }
+
         return Promise.reject(error);
       }
     );
@@ -40,6 +49,7 @@ const useAxiosPrivate = () => {
       axiosPrivateInstance.interceptors.request.eject(requestIntercept);
       axiosPrivateInstance.interceptors.response.eject(responseIntercept);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth, refresh]);
 
   return axiosPrivateInstance;

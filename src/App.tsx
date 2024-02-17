@@ -1,11 +1,11 @@
 import { Suspense, Key } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 
 import routes, { ExtendedRouteProps } from "./routes/config";
 import { AuthProvider } from "./context/AuthProvider";
 import { Body } from "./App.styles";
 import PrivateRoute from "./components/PrivateRoute";
-import { BrowserRouter } from "react-router-dom";
+import PublicRoute from "./components/PublicRoute";
 
 const renderRoute = (route: ExtendedRouteProps, index: Key) => {
   const Element = () =>
@@ -14,7 +14,9 @@ const renderRoute = (route: ExtendedRouteProps, index: Key) => {
         <route.element />
       </PrivateRoute>
     ) : (
-      <route.element />
+      <PublicRoute>
+        <route.element />
+      </PublicRoute>
     );
 
   return <Route key={index} path={route.path} element={<Element />} />;

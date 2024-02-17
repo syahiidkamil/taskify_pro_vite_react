@@ -16,7 +16,7 @@ import {
 import {
   mapNumberToPriorityEnum,
   mapPriorityEnumToNumber,
-} from "../../utils/priorityMapping";
+} from "../../utils/priorityMapping.utils";
 import { TASK_STATUS, TASK_PRIORITY } from "../../interface/Tasks.type";
 
 type EditTaskModalProps = {
