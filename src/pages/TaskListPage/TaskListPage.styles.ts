@@ -5,9 +5,14 @@ export const TaskListPageContainer = styled.div`
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: calc(100% - 40px);
   max-width: 600px;
   margin: auto;
+
+  @media (max-width: 768px) {
+    padding: 20px 10px;
+    width: calc(100% - 20px);
+  }
 `;
 
 export const TaskListTitle = styled.h1`
@@ -85,6 +90,7 @@ export const FilterSortContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  overflow: hidden;
 `;
 
 export const FilterLabel = styled.label`

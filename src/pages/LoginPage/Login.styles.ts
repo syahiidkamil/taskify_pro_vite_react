@@ -5,8 +5,14 @@ export const LoginContainer = styled.div`
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: calc(100% - 40px);
   max-width: 400px;
+  margin: auto;
+
+  @media (max-width: 768px) {
+    padding: 20px 10px;
+    width: calc(100% - 20px);
+  }
 `;
 
 export const Title = styled.h2`
