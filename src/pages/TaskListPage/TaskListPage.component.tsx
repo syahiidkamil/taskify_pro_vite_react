@@ -26,12 +26,33 @@ import { TaskI } from "../../interface/Task.interface";
 
 const TaskListPage: React.FC = () => {
   const navigate = useNavigate();
-  const { fetchTasks } = useTaskApi();
-  const [tasks, setTasks] = useState([]);
+  const { fetchTasks, addTask, deleteTask } = useTaskApi();
+  const [tasks, setTasks] = useState<TaskI[]>([]);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
 
   const handleLogout = () => {
     deleteTokensCookies();
     navigate("/login");
+  };
+
+  const handleAddTask = async () => {
+    if (!newTaskTitle.trim()) return;
+    try {
+      const newTask = await addTask({ title: newTaskTitle });
+      setTasks((prevTask) => [...prevTask, newTask]);
+      setNewTaskTitle("");
+    } catch (error) {
+      console.error("Failed to add task:", error);
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      await deleteTask(taskId);
+      setTasks(tasks.filter((task) => task.id !== taskId));
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+    }
   };
 
   useEffect(() => {
@@ -78,8 +99,12 @@ const TaskListPage: React.FC = () => {
         </div>
       </FilterSortContainer>
       <TaskListInputContainer>
-        <TaskListInput placeholder="What's next on the agenda?" />
-        <AddTaskButton>
+        <TaskListInput
+          placeholder="What's next on the agenda?"
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+        />
+        <AddTaskButton onClick={handleAddTask}>
           <MdAddCircleOutline size="24px" />
         </AddTaskButton>
       </TaskListInputContainer>
@@ -88,7 +113,7 @@ const TaskListPage: React.FC = () => {
           <TaskItemComponent
             key={`${task?.id}`}
             task={task}
-            onDelete={(id) => console.log(`Delete task ${id}`)}
+            onDelete={handleDeleteTask}
           />
         ))}
       </TaskListContainer>

@@ -22,7 +22,7 @@ const useTaskApi = () => {
     }
   };
 
-  const addTask = async (task: TaskI) => {
+  const addTask = async (task: Partial<TaskI>) => {
     try {
       const response = await axiosPrivate.post("/tasks", task);
       return response.data;
@@ -31,7 +31,7 @@ const useTaskApi = () => {
     }
   };
 
-  const updateTask = async (taskId: string, task: TaskI) => {
+  const updateTask = async (taskId: string, task: Partial<TaskI>) => {
     try {
       const response = await axiosPrivate.patch(`/tasks/${taskId}`, task);
       return response.data;
