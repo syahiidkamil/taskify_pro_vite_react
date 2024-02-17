@@ -36,8 +36,9 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
     mapNumberToPriorityEnum(task.priority || 0)
   );
   const [status, setStatus] = useState(task.status === TASK_STATUS.COMPLETE);
+  const today = dayjs().format("YYYY-MM-DD");
   const [dueDate, setDueDate] = useState(
-    task.dueDate ? dayjs(task.dueDate).format("YYYY-MM-DD") : ""
+    task.dueDate ? dayjs(task.dueDate).format("YYYY-MM-DD") : today // edge case
   );
 
   const handleSave = () => {
@@ -89,6 +90,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
+          min={today}
         />
         <ModalCheckboxLabel htmlFor="taskStatus">
           Status
