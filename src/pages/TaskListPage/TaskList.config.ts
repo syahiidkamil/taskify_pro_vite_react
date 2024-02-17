@@ -1,7 +1,7 @@
 import { TASK_STATUS } from "../../interface/Tasks.type";
 
 export const FILTER_OPTIONS = [
-  { value: undefined, label: "All Tasks" },
+  { value: "", label: "All Tasks" },
   { value: TASK_STATUS.COMPLETE, label: "Completed" },
   { value: TASK_STATUS.PENDING, label: "Pending" },
 ];
