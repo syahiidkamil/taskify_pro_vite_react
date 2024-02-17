@@ -31,9 +31,10 @@ const useTaskApi = () => {
     }
   };
 
-  const updateTask = async (taskId: string, task: Partial<TaskI>) => {
+  const updateTask = async (taskId: string, taskRaw: Partial<TaskI>) => {
     try {
-      const response = await axiosPrivate.patch(`/tasks/${taskId}`, task);
+      const { id: _id, ...task } = taskRaw;
+      const response = await axiosPrivate.put(`/tasks/${taskId}`, task);
       return response.data;
     } catch (error: any) {
       return {};

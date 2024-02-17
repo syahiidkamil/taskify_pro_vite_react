@@ -14,9 +14,14 @@ import { TASK_STATUS } from "../../interface/tasks.type";
 type TaskItemProps = {
   task: TaskI;
   onDelete: (id: string) => void;
+  onEdit: (task: TaskI) => void;
 };
 
-const TaskItemComponent: React.FC<TaskItemProps> = ({ task, onDelete }) => {
+const TaskItemComponent: React.FC<TaskItemProps> = ({
+  task,
+  onDelete,
+  onEdit,
+}) => {
   return (
     <TaskItem key={task.id}>
       <TaskCheckbox
@@ -26,7 +31,7 @@ const TaskItemComponent: React.FC<TaskItemProps> = ({ task, onDelete }) => {
       />
       <TaskText>{task.title}</TaskText>
       <TaskActions>
-        <IconButton>
+        <IconButton onClick={() => onEdit(task)}>
           <FaEdit />
         </IconButton>
         <DeleteButton onClick={() => onDelete(task.id)}>

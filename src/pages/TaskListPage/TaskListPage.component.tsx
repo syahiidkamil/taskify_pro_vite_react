@@ -23,12 +23,15 @@ import { FaFilter, FaSort } from "react-icons/fa";
 import { FILTER_OPTIONS, SORT_OPTION } from "./TaskList.config";
 import useTaskApi from "../../hooks/useTaskApi";
 import { TaskI } from "../../interface/Task.interface";
+import EditTaskModal from "../../components/EditTaskModal";
 
 const TaskListPage: React.FC = () => {
   const navigate = useNavigate();
-  const { fetchTasks, addTask, deleteTask } = useTaskApi();
+  const { fetchTasks, addTask, deleteTask, updateTask } = useTaskApi();
   const [tasks, setTasks] = useState<TaskI[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentTask, setCurrentTask] = useState<TaskI | null>(null);
 
   const handleLogout = () => {
     deleteTokensCookies();
@@ -54,6 +57,24 @@ const TaskListPage: React.FC = () => {
       console.error("Failed to delete task:", error);
     }
   };
+
+  const handleEditTask = (task: TaskI) => {
+    setCurrentTask(task);
+    setIsEditing(true);
+  };
+
+  const handleSaveTask = async (updatedTask: Partial<TaskI>) => {
+    try {
+      const response = await updateTask(updatedTask.id as string, updatedTask);
+      setTasks(
+        tasks.map((task) => (task.id === response.id ? response : task))
+      );
+    } catch (error) {
+      console.error("Failed to update task:", error);
+    }
+  };
+
+  const handleCloseModal = () => setIsEditing(false);
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -114,10 +135,18 @@ const TaskListPage: React.FC = () => {
             key={`${task?.id}`}
             task={task}
             onDelete={handleDeleteTask}
+            onEdit={handleEditTask}
           />
         ))}
       </TaskListContainer>
       <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+      {isEditing && currentTask && (
+        <EditTaskModal
+          task={currentTask}
+          onSave={handleSaveTask}
+          onClose={handleCloseModal}
+        />
+      )}
     </TaskListPageContainer>
   );
 };
