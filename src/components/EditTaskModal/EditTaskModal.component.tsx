@@ -17,7 +17,7 @@ import {
   mapNumberToPriorityEnum,
   mapPriorityEnumToNumber,
 } from "../../utils/priorityMapping.utils";
-import { TASK_STATUS, TASK_PRIORITY } from "../../interface/Tasks.type";
+import { TASK_STATUS, TASK_PRIORITY } from "../../interface/Tasks.enum";
 
 type EditTaskModalProps = {
   task: TaskI;

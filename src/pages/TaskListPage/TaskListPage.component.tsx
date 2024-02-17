@@ -25,7 +25,7 @@ import useTaskApi from "../../hooks/useTaskApi";
 import { TaskI } from "../../interface/Task.interface";
 import EditTaskModal from "../../components/EditTaskModal";
 import { parseSortOption } from "../../utils/taskSorting.utils";
-import { TASK_STATUS } from "../../interface/Tasks.type";
+import { TASK_STATUS } from "../../interface/Tasks.enum";
 
 const TaskListPage: React.FC = () => {
   const navigate = useNavigate();

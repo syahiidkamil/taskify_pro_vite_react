@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import useAxiosPrivate from "./useAxiosPrivate";
 import { TaskI } from "../interface/Task.interface";
-import { TASK_STATUS } from "../interface/Tasks.type";
+import { TASK_STATUS } from "../interface/Tasks.enum";
 
 const useTaskApi = () => {
   const axiosPrivate = useAxiosPrivate();

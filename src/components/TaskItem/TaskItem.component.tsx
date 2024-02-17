@@ -9,7 +9,7 @@ import {
   TaskItem,
 } from "./TaskItem.styles";
 import { TaskI } from "../../interface/Task.interface";
-import { TASK_STATUS } from "../../interface/Tasks.type";
+import { TASK_STATUS } from "../../interface/Tasks.enum";
 
 type TaskItemProps = {
   task: TaskI;

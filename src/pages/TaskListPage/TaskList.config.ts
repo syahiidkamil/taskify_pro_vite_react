@@ -1,4 +1,4 @@
-import { TASK_STATUS } from "../../interface/Tasks.type";
+import { TASK_STATUS } from "../../interface/Tasks.enum";
 
 export const FILTER_OPTIONS = [
   { value: "", label: "All Tasks" },
