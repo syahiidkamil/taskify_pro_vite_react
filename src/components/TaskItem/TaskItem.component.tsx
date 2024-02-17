@@ -8,13 +8,11 @@ import {
   DeleteButton,
   TaskItem,
 } from "./TaskItem.styles";
+import { TaskI } from "../../interface/Task.interface";
+import { TASK_STATUS } from "../../interface/tasks.type";
 
 type TaskItemProps = {
-  task: {
-    id: string;
-    title: string;
-    status: string;
-  };
+  task: TaskI;
   onDelete: (id: string) => void;
 };
 
@@ -23,7 +21,7 @@ const TaskItemComponent: React.FC<TaskItemProps> = ({ task, onDelete }) => {
     <TaskItem key={task.id}>
       <TaskCheckbox
         type="checkbox"
-        checked={task.status === "COMPLETED"}
+        checked={task.status === TASK_STATUS.COMPLETE}
         readOnly
       />
       <TaskText>{task.title}</TaskText>

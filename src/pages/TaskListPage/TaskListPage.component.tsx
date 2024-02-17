@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MdAddCircleOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
@@ -21,33 +21,31 @@ import TaskItemComponent from "../../components/TaskItem/TaskItem.component";
 import { deleteTokensCookies } from "../../utils/auth.utils";
 import { FaFilter, FaSort } from "react-icons/fa";
 import { FILTER_OPTIONS, SORT_OPTION } from "./TaskList.config";
-
-const tasks = [
-  {
-    id: "1",
-    title: "Revamp the task page UI",
-    description: "Update the UI to be more user-friendly.",
-    priority: 3,
-    status: "PENDING",
-    dueDate: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "Implement state management",
-    description: "Set up state management for the app.",
-    priority: 2,
-    status: "PENDING",
-    dueDate: new Date().toISOString(),
-  },
-];
+import useTaskApi from "../../hooks/useTaskApi";
+import { TaskI } from "../../interface/Task.interface";
 
 const TaskListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { fetchTasks } = useTaskApi();
+  const [tasks, setTasks] = useState([]);
 
   const handleLogout = () => {
     deleteTokensCookies();
     navigate("/login");
   };
+
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const fetchedTasks = await fetchTasks();
+        setTasks(fetchedTasks);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      }
+    };
+
+    loadTasks();
+  }, []);
 
   return (
     <TaskListPageContainer>
@@ -86,9 +84,9 @@ const TaskListPage: React.FC = () => {
         </AddTaskButton>
       </TaskListInputContainer>
       <TaskListContainer>
-        {tasks.map((task) => (
+        {tasks.map((task: TaskI) => (
           <TaskItemComponent
-            key={task.id}
+            key={`${task?.id}`}
             task={task}
             onDelete={(id) => console.log(`Delete task ${id}`)}
           />
