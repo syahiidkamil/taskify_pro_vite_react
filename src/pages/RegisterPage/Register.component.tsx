@@ -1,85 +1,85 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
 import { axiosInstance } from "../../api/axiosInstance";
-import useAuth from "../../hooks/useAuth";
-import { LOGIN_URL } from "../../constants/api.constants";
+
 import {
   Body,
-  LoginContainer,
+  RegisterContainer,
   Title,
   ErrorMessage,
   FormGroup,
   Label,
   FormControl,
   Button,
-  RegisterLink,
-} from "./Login.styles";
+  LoginLink,
+} from "./Register.styles";
+import { REGISTER_URL } from "../../constants/api.constants";
 
-const Login: React.FC = () => {
-  const { setAuth } = useAuth();
+const Register: React.FC = () => {
   const navigate = useNavigate();
 
-  const userRef = useRef<HTMLInputElement>(null);
-  const errRef = useRef<HTMLParagraphElement>(null);
-
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
-  useEffect(() => {
-    if (userRef.current) {
-      userRef.current.focus();
-    }
-  }, []);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [email, pwd]);
+  const nameRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await axiosInstance.post(LOGIN_URL, {
+      const response = await axiosInstance.post(REGISTER_URL, {
+        name,
         email,
         password: pwd,
       });
-      const { access_token, refresh_token } = response.data;
-      setAuth(access_token, refresh_token);
-      setEmail("");
-      setPwd("");
-      navigate("/home", { replace: true });
+      if (response.data) {
+        alert("Registration successful!");
+        navigate("/login", { replace: true });
+      } else {
+        alert("Something was wrong please try again");
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error(err);
       if (!err.response) {
         setErrMsg("No Server Response");
       } else if (err.response.status === 400) {
         setErrMsg("Missing Email or Password");
+      } else if (err.response.status === 409) {
+        setErrMsg("Email already in use");
       } else if (err.response.status === 401) {
         setErrMsg("Unauthorized");
       } else {
-        setErrMsg("Login Failed");
+        setErrMsg("Registration Failed");
       }
-      errRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
     <Body>
-      <LoginContainer>
-        <Title>Login to Your Account</Title>
-        {errMsg && <ErrorMessage ref={errRef}>{errMsg}</ErrorMessage>}
+      <RegisterContainer>
+        <Title>Register Your Account</Title>
+        {errMsg && <ErrorMessage>{errMsg}</ErrorMessage>}
         <form onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label htmlFor="name">Name:</Label>
+            <FormControl
+              type="text"
+              id="name"
+              placeholder="Enter your name"
+              ref={nameRef}
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+            />
+          </FormGroup>
           <FormGroup>
             <Label htmlFor="email">Email:</Label>
             <FormControl
-              autoComplete="on"
               type="email"
               id="email"
               placeholder="Enter your email"
-              ref={userRef}
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               required
@@ -90,20 +90,20 @@ const Login: React.FC = () => {
             <FormControl
               type="password"
               id="password"
-              placeholder="Enter your password"
+              placeholder="Create a password"
               onChange={(e) => setPwd(e.target.value)}
               value={pwd}
               required
             />
           </FormGroup>
-          <Button type="submit">Sign In</Button>
+          <Button type="submit">Register</Button>
         </form>
-        <RegisterLink as={Link} to="/register">
-          Don't have an account? Register
-        </RegisterLink>
-      </LoginContainer>
+        <LoginLink as={Link} to="/login">
+          Already have an account? Log in
+        </LoginLink>
+      </RegisterContainer>
     </Body>
   );
 };
 
-export default Login;
+export default Register;

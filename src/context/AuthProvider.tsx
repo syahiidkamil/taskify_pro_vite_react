@@ -1,14 +1,36 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { createContext, useState, ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import { flushSync } from "react-dom";
+import { jwtDecode } from "jwt-decode";
 
-const AuthContext = createContext<any>({});
+import { AuthI, UserI } from "../interface/AuthContext.interface";
+import AuthContext from "./AuthContext";
+import { setTokensCookies, getIsUserAuthenticated } from "../utils/auth.utils";
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [auth, setAuth] = useState<any>({});
+  const [authRaw, setAuthRaw] = useState<AuthI>({});
+
+  const setAuth = (access_token: string, refresh_token?: string) => {
+    const { name, email } = jwtDecode<UserI>(access_token);
+    flushSync(() => {
+      setTokensCookies(access_token, refresh_token);
+      setAuthRaw({
+        user: {
+          name,
+          email,
+        },
+        isUserAuthenticated: !!email || getIsUserAuthenticated(),
+      });
+    });
+  };
+
+  const auth = {
+    user: authRaw.user,
+    isUserAuthenticated: getIsUserAuthenticated(),
+  };
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
@@ -16,5 +38,3 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export default AuthContext;

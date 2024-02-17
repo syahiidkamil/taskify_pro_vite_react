@@ -11,7 +11,7 @@ export const Body = styled.div`
   padding: 20px;
 `;
 
-export const LoginContainer = styled.div`
+export const RegisterContainer = styled.div`
   background: white;
   padding: 40px;
   border-radius: 10px;
@@ -66,7 +66,7 @@ export const Button = styled.button`
   }
 `;
 
-export const RegisterLink = styled.a`
+export const LoginLink = styled.a`
   text-align: center;
   display: block;
   margin-top: 20px;

@@ -8,11 +8,9 @@ const useRefreshToken = () => {
     const response = await axiosInstance.get("/auth/refresh", {
       withCredentials: true,
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setAuth((prev: any) => {
-      return { ...prev, accessToken: response.data.accessToken };
-    });
-    return response.data.accessToken;
+    const { access_token } = response?.data || {};
+    setAuth(access_token);
+    return access_token;
   };
   return refresh;
 };

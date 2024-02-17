@@ -10,12 +10,22 @@ export interface ExtendedRouteProps {
 const routes: ExtendedRouteProps[] = [
   {
     path: "/",
-    element: React.lazy(() => import("../pages/HomePage/HomePage.component")),
+    element: React.lazy(() => import("../pages/HomePage")),
+    protected: true,
+  },
+  {
+    path: "/home",
+    element: React.lazy(() => import("../pages/HomePage")),
     protected: true,
   },
   {
     path: "/login",
-    element: React.lazy(() => import("../pages/LoginPage/Login.component")),
+    element: React.lazy(() => import("../pages/LoginPage")),
+    protected: false,
+  },
+  {
+    path: "/register",
+    element: React.lazy(() => import("../pages/RegisterPage")),
     protected: false,
   },
 ];
