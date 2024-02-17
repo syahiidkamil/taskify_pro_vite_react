@@ -1,4 +1,4 @@
-import { TASK_PRIORITY } from "../interface/tasks.type";
+import { TASK_PRIORITY } from "../interface/Tasks.type";
 
 export const mapNumberToPriorityEnum = (
   priorityNumber: number

@@ -1,4 +1,4 @@
-import { TASK_STATUS } from "./tasks.type";
+import { TASK_STATUS } from "./Tasks.type";
 
 export interface TaskI {
   id: string;

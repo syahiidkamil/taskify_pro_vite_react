@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import dayjs from "dayjs";
+
 import { TaskI } from "../../interface/Task.interface";
 import {
   ModalBackdrop,
@@ -15,7 +17,7 @@ import {
   mapNumberToPriorityEnum,
   mapPriorityEnumToNumber,
 } from "../../utils/priorityMapping";
-import { TASK_STATUS, TASK_PRIORITY } from "../../interface/tasks.type";
+import { TASK_STATUS, TASK_PRIORITY } from "../../interface/Tasks.type";
 
 type EditTaskModalProps = {
   task: TaskI;
@@ -34,6 +36,9 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
     mapNumberToPriorityEnum(task.priority || 0)
   );
   const [status, setStatus] = useState(task.status === TASK_STATUS.COMPLETE);
+  const [dueDate, setDueDate] = useState(
+    task.dueDate ? dayjs(task.dueDate).format("YYYY-MM-DD") : ""
+  );
 
   const handleSave = () => {
     onSave({
@@ -42,6 +47,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
       description,
       priority: mapPriorityEnumToNumber(priority),
       status: status ? TASK_STATUS.COMPLETE : TASK_STATUS.PENDING,
+      dueDate: new Date(dueDate),
     });
     onClose();
   };
@@ -77,6 +83,13 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
             </option>
           ))}
         </ModalSelect>
+        <ModalLabel htmlFor="taskDueDate">Due Date</ModalLabel>
+        <ModalInput
+          id="taskDueDate"
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
         <ModalCheckboxLabel htmlFor="taskStatus">
           Status
           <input

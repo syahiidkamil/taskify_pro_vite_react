@@ -1,12 +1,14 @@
+import { TASK_STATUS } from "../../interface/Tasks.type";
+
 export const FILTER_OPTIONS = [
-  { value: "", label: "All Tasks" },
-  { value: "COMPLETED", label: "Completed" },
-  { value: "PENDING", label: "Pending" },
+  { value: undefined, label: "All Tasks" },
+  { value: TASK_STATUS.COMPLETE, label: "Completed" },
+  { value: TASK_STATUS.PENDING, label: "Pending" },
 ];
 
 export const SORT_OPTION = [
-  { value: "createdAt-asc", label: "Created At Ascending" },
-  { value: "createdAt-desc", label: "Created At Descending" },
+  { value: "createdDate-asc", label: "Created Date Ascending" },
+  { value: "createdDate-desc", label: "Created Date Descending" },
   { value: "priority-asc", label: "Priority Ascending" },
   { value: "priority-desc", label: "Priority Descending" },
   { value: "status-asc", label: "Status Ascending" },

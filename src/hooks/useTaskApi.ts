@@ -1,19 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import useAxiosPrivate from "./useAxiosPrivate";
 import { TaskI } from "../interface/Task.interface";
+import { TASK_STATUS } from "../interface/Tasks.type";
 
 const useTaskApi = () => {
   const axiosPrivate = useAxiosPrivate();
 
-  const fetchTasks = async (
-    sort = "priority",
-    limit = 10,
+  const fetchTasks = async ({
+    sort,
+    limit = 1000,
     offset = 0,
-    order = "desc"
-  ) => {
+    order,
+    status,
+  }: {
+    sort?: string;
+    limit?: number;
+    offset?: number;
+    order?: string;
+    status?: string;
+  }) => {
     try {
       const response = await axiosPrivate.get("/tasks", {
-        params: { sort, order, limit, offset },
+        params: { sort, order, limit, offset, status },
       });
       return response.data;
     } catch (error: any) {
@@ -41,6 +49,17 @@ const useTaskApi = () => {
     }
   };
 
+  const updateTaskStatus = async (taskId: string, status: TASK_STATUS) => {
+    try {
+      const response = await axiosPrivate.patch(`/tasks/${taskId}/status`, {
+        status,
+      });
+      return response.data;
+    } catch (error: any) {
+      return {};
+    }
+  };
+
   const deleteTask = async (taskId: string) => {
     try {
       const response = await axiosPrivate.delete(`/tasks/${taskId}`);
@@ -55,6 +74,7 @@ const useTaskApi = () => {
     addTask,
     updateTask,
     deleteTask,
+    updateTaskStatus,
   };
 };
 

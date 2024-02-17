@@ -24,14 +24,19 @@ import { FILTER_OPTIONS, SORT_OPTION } from "./TaskList.config";
 import useTaskApi from "../../hooks/useTaskApi";
 import { TaskI } from "../../interface/Task.interface";
 import EditTaskModal from "../../components/EditTaskModal";
+import { parseSortOption } from "../../utils/taskSorting";
+import { TASK_STATUS } from "../../interface/Tasks.type";
 
 const TaskListPage: React.FC = () => {
   const navigate = useNavigate();
-  const { fetchTasks, addTask, deleteTask, updateTask } = useTaskApi();
+  const { fetchTasks, addTask, deleteTask, updateTask, updateTaskStatus } =
+    useTaskApi();
   const [tasks, setTasks] = useState<TaskI[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [currentTask, setCurrentTask] = useState<TaskI | null>(null);
+  const [filter, setFilter] = useState("");
+  const [sortOption, setSortOption] = useState("createdDate-asc");
 
   const handleLogout = () => {
     deleteTokensCookies();
@@ -76,10 +81,34 @@ const TaskListPage: React.FC = () => {
 
   const handleCloseModal = () => setIsEditing(false);
 
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter(e.target.value);
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(e.target.value);
+  };
+
+  const handleToggleStatus = async (taskId: string, newStatus: TASK_STATUS) => {
+    try {
+      const updatedTask = await updateTaskStatus(taskId, newStatus);
+      setTasks(
+        tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      );
+    } catch (error) {
+      console.error("Failed to toggle task status:", error);
+    }
+  };
+
   useEffect(() => {
     const loadTasks = async () => {
       try {
-        const fetchedTasks = await fetchTasks();
+        const { sort, order } = parseSortOption(sortOption);
+        const fetchedTasks = await fetchTasks({
+          status: filter ? filter : undefined,
+          sort: sort ? sort : undefined,
+          order: order ? order : undefined,
+        });
         setTasks(fetchedTasks);
       } catch (error) {
         console.error("Failed to fetch tasks:", error);
@@ -87,7 +116,8 @@ const TaskListPage: React.FC = () => {
     };
 
     loadTasks();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter, sortOption]);
 
   return (
     <TaskListPageContainer>
@@ -97,7 +127,7 @@ const TaskListPage: React.FC = () => {
         <div>
           <FilterLabel>
             <FaFilter /> Filter
-            <FilterSelect defaultValue="ALL">
+            <FilterSelect defaultValue="ALL" onChange={handleFilterChange}>
               {FILTER_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -109,7 +139,10 @@ const TaskListPage: React.FC = () => {
         <div>
           <SortLabel>
             <FaSort /> Sort
-            <SortSelect defaultValue="createdAt-asc">
+            <SortSelect
+              defaultValue="createdAt-asc"
+              onChange={handleSortChange}
+            >
               {SORT_OPTION.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -136,6 +169,7 @@ const TaskListPage: React.FC = () => {
             task={task}
             onDelete={handleDeleteTask}
             onEdit={handleEditTask}
+            onToggleStatus={handleToggleStatus}
           />
         ))}
       </TaskListContainer>
