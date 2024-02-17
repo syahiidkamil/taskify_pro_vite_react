@@ -2,8 +2,9 @@ import { Suspense, Key } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import routes, { ExtendedRouteProps } from "./routes/config";
-import PrivateRoute from "./components/PrivateRoute.component";
 import { AuthProvider } from "./context/AuthProvider";
+import { Body } from "./App.styles";
+import PrivateRoute from "./components/PrivateRoute";
 
 const renderRoute = (route: ExtendedRouteProps, index: Key) => {
   const Element = () =>
@@ -21,11 +22,13 @@ const renderRoute = (route: ExtendedRouteProps, index: Key) => {
 const App = () => {
   return (
     <AuthProvider>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          {routes.map((route, index) => renderRoute(route, index))}
-        </Routes>
-      </Suspense>
+      <Body>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            {routes.map((route, index) => renderRoute(route, index))}
+          </Routes>
+        </Suspense>
+      </Body>
     </AuthProvider>
   );
 };

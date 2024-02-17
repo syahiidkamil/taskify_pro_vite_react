@@ -10,12 +10,12 @@ export interface ExtendedRouteProps {
 const routes: ExtendedRouteProps[] = [
   {
     path: "/",
-    element: React.lazy(() => import("../pages/HomePage")),
+    element: React.lazy(() => import("../pages/TaskListPage")),
     protected: true,
   },
   {
-    path: "/home",
-    element: React.lazy(() => import("../pages/HomePage")),
+    path: "/tasklist",
+    element: React.lazy(() => import("../pages/TaskListPage")),
     protected: true,
   },
   {

@@ -5,7 +5,6 @@ import { axiosInstance } from "../../api/axiosInstance";
 import useAuth from "../../hooks/useAuth";
 import { LOGIN_URL } from "../../constants/api.constants";
 import {
-  Body,
   LoginContainer,
   Title,
   ErrorMessage,
@@ -49,7 +48,7 @@ const Login: React.FC = () => {
       setAuth(access_token, refresh_token);
       setEmail("");
       setPwd("");
-      navigate("/home", { replace: true });
+      navigate("/tasklist", { replace: true });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
@@ -67,42 +66,40 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Body>
-      <LoginContainer>
-        <Title>Login to Your Account</Title>
-        {errMsg && <ErrorMessage ref={errRef}>{errMsg}</ErrorMessage>}
-        <form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label htmlFor="email">Email:</Label>
-            <FormControl
-              autoComplete="on"
-              type="email"
-              id="email"
-              placeholder="Enter your email"
-              ref={userRef}
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-              required
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label htmlFor="password">Password:</Label>
-            <FormControl
-              type="password"
-              id="password"
-              placeholder="Enter your password"
-              onChange={(e) => setPwd(e.target.value)}
-              value={pwd}
-              required
-            />
-          </FormGroup>
-          <Button type="submit">Sign In</Button>
-        </form>
-        <RegisterLink as={Link} to="/register">
-          Don't have an account? Register
-        </RegisterLink>
-      </LoginContainer>
-    </Body>
+    <LoginContainer>
+      <Title>Login to Your Account</Title>
+      {errMsg && <ErrorMessage ref={errRef}>{errMsg}</ErrorMessage>}
+      <form onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label htmlFor="email">Email:</Label>
+          <FormControl
+            autoComplete="on"
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            ref={userRef}
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            required
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label htmlFor="password">Password:</Label>
+          <FormControl
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            onChange={(e) => setPwd(e.target.value)}
+            value={pwd}
+            required
+          />
+        </FormGroup>
+        <Button type="submit">Sign In</Button>
+      </form>
+      <RegisterLink as={Link} to="/register">
+        Don't have an account? Register
+      </RegisterLink>
+    </LoginContainer>
   );
 };
 

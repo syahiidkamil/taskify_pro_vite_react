@@ -12,6 +12,11 @@ export const setTokensCookies = (
   }
 };
 
+export const deleteTokensCookies = () => {
+  Cookies.remove("access_token");
+  Cookies.remove("refresh_token");
+};
+
 export const getIsUserAuthenticated = (): boolean => {
   return !!Cookies.get("access_token");
 };
