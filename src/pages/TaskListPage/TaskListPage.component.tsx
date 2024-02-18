@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import { MdAddCircleOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +27,8 @@ import { TaskI } from "../../interface/Task.interface";
 import EditTaskModal from "../../components/EditTaskModal";
 import { parseSortOption } from "../../utils/taskSorting.utils";
 import { TASK_STATUS } from "../../interface/Tasks.enum";
+import { axiosInstance } from "../../api/axiosInstance";
+import { LOGOUT_URL } from "../../constants/api.constants";
 
 const TaskListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -39,6 +42,15 @@ const TaskListPage: React.FC = () => {
   const [sortOption, setSortOption] = useState("createdDate-asc");
 
   const handleLogout = () => {
+    axiosInstance.post(
+      LOGOUT_URL,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("access_token")}`,
+        },
+      }
+    );
     deleteTokensCookies();
     navigate("/login");
   };
@@ -90,13 +102,27 @@ const TaskListPage: React.FC = () => {
   };
 
   const handleToggleStatus = async (taskId: string, newStatus: TASK_STATUS) => {
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
+
     try {
       const updatedTask = await updateTaskStatus(taskId, newStatus);
-      setTasks(
-        tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      setTasks((currentTasks) =>
+        currentTasks.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task
+        )
       );
     } catch (error) {
       console.error("Failed to toggle task status:", error);
+      // Revert the optimistic update
+      setTasks((currentTasks) =>
+        currentTasks.map((task) =>
+          task.id === taskId ? { ...task, status: task.status } : task
+        )
+      );
     }
   };
 
