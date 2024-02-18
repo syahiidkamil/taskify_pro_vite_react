@@ -57,21 +57,41 @@ const TaskListPage: React.FC = () => {
 
   const handleAddTask = async () => {
     if (!newTaskTitle.trim()) return;
+
+    const optimisticId = `${Date.now().toString()}-${newTaskTitle}`;
+
+    const optimisticTask = {
+      id: optimisticId,
+      title: newTaskTitle,
+      status: TASK_STATUS.PENDING,
+    };
+    setTasks((prevTasks) => [...prevTasks, optimisticTask]);
+    setNewTaskTitle("");
     try {
       const newTask = await addTask({ title: newTaskTitle });
-      setTasks((prevTask) => [...prevTask, newTask]);
-      setNewTaskTitle("");
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === optimisticId ? newTask : task))
+      );
     } catch (error) {
       console.error("Failed to add task:", error);
+      setTasks((prevTasks) =>
+        prevTasks.filter((task) => task.id !== optimisticId)
+      );
     }
   };
 
   const handleDeleteTask = async (taskId: string) => {
+    const previousTasks = [...tasks];
+
+    setTasks((currentTasks) =>
+      currentTasks.filter((task) => task.id !== taskId)
+    );
+
     try {
       await deleteTask(taskId);
-      setTasks(tasks.filter((task) => task.id !== taskId));
     } catch (error) {
       console.error("Failed to delete task:", error);
+      setTasks(previousTasks);
     }
   };
 
@@ -81,13 +101,27 @@ const TaskListPage: React.FC = () => {
   };
 
   const handleSaveTask = async (updatedTask: Partial<TaskI>) => {
+    const taskIndex = tasks.findIndex((task) => task.id === updatedTask.id);
+    const previousTask = tasks[taskIndex];
+
+    setTasks((currentTasks) =>
+      currentTasks.map((task, index) =>
+        index === taskIndex ? { ...task, ...updatedTask } : task
+      )
+    );
+
     try {
       const response = await updateTask(updatedTask.id as string, updatedTask);
-      setTasks(
-        tasks.map((task) => (task.id === response.id ? response : task))
+      setTasks((currentTasks) =>
+        currentTasks.map((task) => (task.id === response.id ? response : task))
       );
     } catch (error) {
       console.error("Failed to update task:", error);
+      setTasks((currentTasks) =>
+        currentTasks.map((task, index) =>
+          index === taskIndex ? previousTask : task
+        )
+      );
     }
   };
 
